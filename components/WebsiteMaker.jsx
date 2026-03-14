@@ -2,7 +2,21 @@
 import { useState, useRef, useEffect } from "react";
 
 export default function WebsiteMaker() {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(`Create a modern AI SaaS startup landing page called "NeuroFlow".
+
+Use a dark futuristic theme with purple and blue gradients.
+
+Sections:
+- Sticky navbar with logo and links
+- Hero section with big headline "Automate Your Business With AI"
+- Features section with 3 cards showing AI automation features
+- Testimonials section with 3 customer reviews
+- Pricing section with Basic, Pro and Enterprise plans
+- Contact form with name, email and message
+- Footer with links and social icons
+
+Add hover effects, smooth animations and responsive design for mobile and tablet.`);
+
   const [loading, setLoading] = useState(false);
   const [html, setHtml] = useState("");
   const [css, setCss] = useState("");
@@ -46,14 +60,6 @@ export default function WebsiteMaker() {
     "  </section>",
     "</body>",
     "</html>"
-  ];
-
-  const examples = [
-    "Modern SaaS landing page",
-    "Luxury watch ecommerce website",
-    "Fitness coach landing page",
-    "AI startup website",
-    "Developer portfolio"
   ];
 
   useEffect(() => {
@@ -156,7 +162,7 @@ export default function WebsiteMaker() {
         <div className="flex gap-2 mb-3">
           <input
             className="flex-1 p-4 rounded-xl border border-purple-700 bg-zinc-900 text-white"
-            placeholder="Describe the website you want..."
+            placeholder="Edit the example prompt or describe your website..."
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
@@ -172,17 +178,6 @@ export default function WebsiteMaker() {
           </button>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-          {examples.map((ex) => (
-            <button
-              key={ex}
-              onClick={() => setPrompt(ex)}
-              className="text-xs text-white bg-zinc-700 hover:bg-purple-700 px-3 py-1 rounded-full transition-colors"
-            >
-              {ex}
-            </button>
-          ))}
-        </div>
 
         {loading && (
           <div className="bg-zinc-900 border border-purple-800 rounded-xl p-6 mb-6">
