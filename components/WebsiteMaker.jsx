@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function WebsiteMaker() {
   const [prompt, setPrompt] = useState("");
@@ -9,141 +9,312 @@ export default function WebsiteMaker() {
   const [js, setJs] = useState("");
   const [tab, setTab] = useState("preview");
   const [error, setError] = useState("");
+  const [device, setDevice] = useState("desktop");
+  const [copied, setCopied] = useState("");
+  const [progressStep, setProgressStep] = useState(0);
+  const [fakeCode, setFakeCode] = useState("");
+
+  const previewRef = useRef(null);
+
+  const steps = [
+    "Initializing AI builder...",
+    "Designing modern layout...",
+    "Generating HTML structure...",
+    "Writing responsive CSS...",
+    "Adding JavaScript interactivity...",
+    "Optimizing mobile layout...",
+    "Finalizing website..."
+  ];
+
+  const fakeCodeLines = [
+    "<!DOCTYPE html>",
+    "<html lang='en'>",
+    "<head>",
+    "  <meta charset='UTF-8'>",
+    "  <meta name='viewport' content='width=device-width, initial-scale=1.0'>",
+    "  <title>AI Generated Website</title>",
+    "</head>",
+    "<body>",
+    "  <header class='hero'>",
+    "    <h1>Build Faster with AI</h1>",
+    "    <p>Create beautiful websites instantly</p>",
+    "  </header>",
+    "  <section class='features'>",
+    "    <div class='card'>Feature One</div>",
+    "    <div class='card'>Feature Two</div>",
+    "    <div class='card'>Feature Three</div>",
+    "  </section>",
+    "</body>",
+    "</html>"
+  ];
+
+  const examples = [
+    "Modern SaaS landing page",
+    "Luxury watch ecommerce website",
+    "Fitness coach landing page",
+    "AI startup website",
+    "Developer portfolio"
+  ];
+
+  useEffect(() => {
+    if (!loading) {
+      setFakeCode("");
+      return;
+    }
+
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setFakeCode((prev) => prev + fakeCodeLines[index] + "\n");
+      index++;
+
+      if (index >= fakeCodeLines.length) {
+        clearInterval(interval);
+      }
+    }, 90);
+
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const interval = setInterval(() => {
+      setProgressStep((prev) => (prev + 1) % steps.length);
+    }, 1200);
+
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
+
     setLoading(true);
     setError("");
-    setHtml(""); setCss(""); setJs("");
+    setHtml("");
+    setCss("");
+    setJs("");
+    setProgressStep(0);
+
     try {
       const res = await fetch("/api/website", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({ prompt })
       });
-      const data = await res.json();
-      if (data.error) setError(data.error);
+
+      const data = await res.json();  // ← yeh try block ke ANDAR hona chahiye
+
+      if (data.error) {
+        setError(data.error);
+        return;
+      }
+
       setHtml(data.html || "");
       setCss(data.css || "");
       setJs(data.js || "");
       setTab("preview");
-    } catch (err) {
+
+      setTimeout(() => {
+        previewRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+
+    } catch {
       setError("Failed to generate website.");
     } finally {
       setLoading(false);
     }
   };
 
-  // 📋 Copy code function
-  const copyCode = (code) => {
-    navigator.clipboard.writeText(code);
-    alert("Code copied to clipboard ✅");
+  const copyCode = async (code, type) => {
+    await navigator.clipboard.writeText(code);
+    setCopied(type);
+    setTimeout(() => setCopied(""), 2000);
+  };
+  const openFullScreen = () => {
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
   };
 
-  // 🔍 Full screen preview function
-  const openFullPreview = () => {
-    const previewWindow = window.open("", "_blank");
-    previewWindow.document.write(`
-      <html>
-        <head>
-          <style>${css}</style>
-        </head>
-        <body>
-          ${html}
-          <script>${js}<\/script>
-        </body>
-      </html>
-    `);
-    previewWindow.document.close();
-  };
+  const deviceWidth =
+    device === "mobile"
+      ? "375px"
+      : device === "tablet"
+        ? "768px"
+        : "100%";
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#1e003a] via-[#2d0a4b] to-[#0a001a] flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-black/60 rounded-2xl shadow-2xl p-8 border border-purple-800">
-        <h1 className="text-3xl font-bold text-purple-400 mb-6 text-center drop-shadow">AI Website Generator</h1>
-        <div className="flex gap-2 mb-6">
+    <main className="min-h-screen bg-gradient-to-br from-[#1e003a] via-[#2d0a4b] to-[#0a001a] flex flex-col items-center p-6">
+
+      <div className="w-full max-w-4xl bg-black/60 rounded-2xl shadow-2xl p-8 border border-purple-800">
+
+        <h1 className="text-3xl font-bold text-purple-400 text-center mb-6">
+          AI Website Builder
+        </h1>
+
+        <div className="flex gap-2 mb-3">
           <input
-            className="flex-1 p-4 rounded-xl border-2 border-purple-700 bg-zinc-900 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
-            placeholder="Describe your website idea..."
+            className="flex-1 p-4 rounded-xl border border-purple-700 bg-zinc-900 text-white"
+            placeholder="Describe the website you want..."
             value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleGenerate()}
+            onChange={(e) => setPrompt(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
             disabled={loading}
           />
+
           <button
-            className="bg-gradient-to-r from-purple-700 to-fuchsia-600 hover:from-purple-800 hover:to-fuchsia-700 text-white px-6 py-2 rounded-xl font-semibold shadow transition"
+            className="bg-purple-600 hover:bg-purple-700 px-6 rounded-xl disabled:opacity-50"
             onClick={handleGenerate}
             disabled={loading}
           >
-            {loading ? "Building..." : "Generate"}
+            {loading ? "Generating..." : "Generate"}
           </button>
         </div>
-        {error && <div className="text-red-400 mb-4">{error}</div>}
 
-        {(html || css || js) ? (
-          <div>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {examples.map((ex) => (
+            <button
+              key={ex}
+              onClick={() => setPrompt(ex)}
+              className="text-xs text-white bg-zinc-700 hover:bg-purple-700 px-3 py-1 rounded-full transition-colors"
+            >
+              {ex}
+            </button>
+          ))}
+        </div>
+
+        {loading && (
+          <div className="bg-zinc-900 border border-purple-800 rounded-xl p-6 mb-6">
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 bg-purple-400 rounded-full animate-ping"></div>
+              <span className="text-purple-300 font-medium">
+                AI is building your website...
+              </span>
+            </div>
+
+            <div className="space-y-2 text-sm text-gray-300">
+              {steps.map((step, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 ${index === progressStep
+                    ? "text-purple-400"
+                    : "opacity-50"
+                    }`}
+                >
+                  {index < progressStep ? "✓" : "⚙"} {step}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 bg-black border border-purple-700 rounded-lg p-4 font-mono text-sm text-green-400 h-48 overflow-hidden">
+              <pre className="whitespace-pre-wrap">
+                {fakeCode}
+              </pre>
+            </div>
+
+          </div>
+        )}
+
+        {error && (
+          <div className="text-red-400 mb-4">{error}</div>
+        )}
+
+        {(html || css || js) && (
+          <div ref={previewRef}>
+
             <div className="flex gap-2 mb-2">
-              {["preview", "html", "css", "js"].map(t => (
+              {["preview", "html", "css", "js"].map((t) => (
                 <button
                   key={t}
-                  className={`px-4 py-2 rounded-t-lg font-semibold transition ${
-                    tab === t
-                      ? "bg-purple-700 text-white"
-                      : "bg-zinc-800 text-gray-300 hover:bg-purple-900"
-                  }`}
                   onClick={() => setTab(t)}
+                  className={`px-4 py-2 rounded text-white font-medium ${tab === t ? "bg-purple-600" : "bg-zinc-700 hover:bg-zinc-600"
+                    }`}
                 >
                   {t.toUpperCase()}
                 </button>
               ))}
             </div>
 
-            {/* Toolbar with Copy & Full Screen */}
-            <div className="flex justify-end gap-2 mb-2">
+            <div className="flex gap-2 mb-2">
+
               {tab !== "preview" && (
                 <button
-                  onClick={() => copyCode(tab === "html" ? html : tab === "css" ? css : js)}
-                  className="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded-lg text-sm"
+                  onClick={() =>
+                    copyCode(
+                      tab === "html"
+                        ? html
+                        : tab === "css"
+                          ? css
+                          : js,
+                      tab
+                    )
+                  }
+                  className="bg-purple-600 px-3 py-1 rounded text-sm"
                 >
-                  📋 Copy {tab.toUpperCase()}
+                  {copied === tab ? "Copied ✓" : "Copy"}
                 </button>
               )}
+
               {tab === "preview" && (
-                <button
-                  onClick={openFullPreview}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm"
-                >
-                  ⛶ Full Screen
-                </button>
+                <>
+                  <select
+                    value={device}
+                    onChange={(e) => setDevice(e.target.value)}
+                    className="bg-zinc-700 text-white px-2 py-1 rounded text-sm"
+                  >
+                    <option value="desktop">Desktop</option>
+                    <option value="tablet">Tablet</option>
+                    <option value="mobile">Mobile</option>
+                  </select>
+
+                  <button
+                    onClick={openFullScreen}
+                    className="bg-purple-600 hover:bg-purple-500 text-white px-3 py-1 rounded text-sm transition-colors"
+                  >
+                    ⛶ Full Screen
+                  </button>
+                </>
               )}
             </div>
 
-            <div className="bg-zinc-950 border border-purple-800 p-4 rounded-b-xl overflow-auto h-[60vh] shadow-inner">
+            <div className="bg-zinc-950 border border-purple-800 p-4 rounded h-[60vh] overflow-auto">
+
               {tab === "preview" && (
-                <iframe
-                  title="Website Preview"
-                  className="w-full h-full bg-white rounded-lg border"
-                  srcDoc={`<style>${css}</style>${html}<script>${js}<\/script>`}
-                />
+                <div style={{ width: deviceWidth }} className="mx-auto h-full transition-all duration-300">
+                  <iframe
+                    title="preview"
+                    sandbox="allow-scripts allow-same-origin"
+                    className="w-full h-full bg-white rounded"
+                    srcDoc={html}
+                  />
+                </div>
               )}
+
               {tab === "html" && (
-                <pre className="text-green-400 whitespace-pre-wrap">{html}</pre>
+                <pre className="text-green-400 text-sm">{html}</pre>
               )}
+
               {tab === "css" && (
-                <pre className="text-blue-400 whitespace-pre-wrap">{css}</pre>
+                <pre className="text-blue-400 text-sm">{css}</pre>
               )}
+
               {tab === "js" && (
-                <pre className="text-yellow-400 whitespace-pre-wrap">{js}</pre>
+                <pre className="text-yellow-400 text-sm">{js}</pre>
               )}
+
             </div>
+
           </div>
-        ) : (
-          <div className="text-gray-400 text-center mt-8">Your generated website code will appear here.</div>
         )}
+
       </div>
-      <footer className="mt-8 text-purple-300 text-xs opacity-80">
-        Made with <span className="text-pink-400">♥</span> AI Website Builder
+
+      <footer className="mt-6 text-purple-300 text-xs">
+        Built with AI
       </footer>
+
     </main>
   );
 }
