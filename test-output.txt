@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RankUp SEO Agency - Boost Your Online Presence</title>
+    <style>
+        :root {
+            --dark-bg: #1a1a2e;
+            --card-bg: #222831;
+            --text-color: #f5f5f5;
+            --accent-color-1: #ff6b6b; /* Vibrant coral/pink */
+            --accent-color-2: #4ecdc4; /* Teal */
+            --border-radius-lg: 25px;
+            --border-radius-md: 15px;
+            --box-shadow-light: 0 8px 20px rgba(0, 0, 0, 0.3);
+            --box-shadow-vibrant: 0 0 20px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff;
+            margin-bottom: 0.8em;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 3em; }
+        h2 { font-size: 2.5em; }
+        h3 { font-size: 1.8em; }
+
+        p {
+            margin-bottom: 1em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background-color: var(--accent-color-1);
+            color: #ffffff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color-2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.5);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: rgba(26, 26, 46, 0.95); /* Semi-transparent dark bg */
+            padding: 15px 0;
+            z-index: 1000;
+            box-shadow: var(--box-shadow-light);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--accent-color-1);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-logo span {
+            color: #ffffff;
+            font-size: 1.2em;
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.05em;
+            padding: 5px 0;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color-1);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color-1);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(rgba(26, 26, 46, 0.7), rgba(26, 26, 46, 0.7)), url('https://picsum.photos/1920/1080?random=1');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: var(--border-radius-lg);
+            border-bottom-right-radius: var(--border-radius-lg);
+            padding: 20px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at top left, rgba(255, 107, 107, 0.1), transparent 50%),
+                              radial-gradient(circle at bottom right, rgba(78, 205, 196, 0.1), transparent 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 40px;
+            background-color: rgba(34, 40, 49, 0.8); /* Semi-transparent card-bg */
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-vibrant);
+            animation: fadeInScale 1s ease-out forwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .hero h1 {
+            font-size: 4.5em;
+            margin-bottom: 0.2em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+        }
+
+        .hero p {
+            font-size: 1.4em;
+            margin-bottom: 1.5em;
+            color: #e0e0e0;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: var(--dark-bg);
+        }
+
+        .features h2 {
+            margin-bottom: 1.5em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent-color-1);
+            border-radius: 50%;
+            opacity: 0.1;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow-vibrant);
+        }
+
+        .feature-card:hover::before {
+            transform: scale(1.5);
+            opacity: 0.2;
+        }
+
+        .feature-card .icon {
+            font-size: 3em;
+            color: var(--accent-color-1);
+            margin-bottom: 20px;
+            display: inline-block;
+            background-color: rgba(255, 107, 107, 0.1);
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+            line-height: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 1.6em;
+            margin-bottom: 15px;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            background-color: #16213e; /* Slightly different dark background */
+        }
+
+        .testimonials h2 {
+            margin-bottom: 1.5em;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .testimonial-card {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-light);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow-vibrant);
+        }
+
+        .testimonial-card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px auto;
+            border: 4px solid var(--accent-color-2);
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+            flex-grow: 1;
+        }
+
+        .testimonial-card .author {
+            font-weight: bold;
+            color: var(--accent-color-1);
+            font-size: 1.1em;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background-color: var(--dark-bg);
+        }
+
+        .pricing h2 {
+            margin-bottom: 1.5em;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .pricing-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow-vibrant);
+        }
+
+        .pricing-card.popular {
+            border: 3px solid var(--accent-color-1);
+            transform: translateY(-15px);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.6);
+        }
+
+        .pricing-card.popular .btn {
+            background-color: var(--accent-color-2);
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .pricing-card.popular .btn:hover {
+            background-color: var(--accent-color-1);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .pricing-card h3 {
+            font-size: 2em;
+            color: var(--accent-color-1);
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .price {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .price span {
+            font-size: 0.5em;
+            font-weight: normal;
+            color: #e0e0e0;
+        }
+
+        .pricing-card .duration {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 40px 0;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .pricing-card ul li {
+            margin-bottom: 15px;
+            font-size: 1.05em;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-card ul li::before {
+            content: '✓';
+            color: var(--accent-color-2);
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* Contact Form */
+        .contact {
+            background-color: #16213e; /* Slightly different dark background */
+        }
+
+        .contact h2 {
+            margin-bottom: 1.5em;
+        }
+
+        .contact-form {
+            max-width: 700px;
+            margin: 50px auto 0 auto;
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--box-shadow-light);
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 1.1em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group textarea {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: var(--border-radius-md);
+            background-color: #333d4a; /* Darker input background */
+            color: var(--text-color);
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color-1);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .contact-form .btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #111827; /* Even darker blue for footer */
+            padding: 60px 0 30px 0;
+            text-align: center;
+            border-top-left-radius: var(--border-radius-lg);
+            border-top-right-radius: var(--border-radius-lg);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            color: var(--accent-color-1);
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: var(--accent-color-2);
+        }
+
+        .footer-col p {
+            color: #e0e0e0;
+        }
+
+        .footer-bottom {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9em;
+            color: #a0a0a0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            h1 { font-size: 3.5em; }
+            h2 { font-size: 2em; }
+            h3 { font-size: 1.5em; }
+
+            .hero h1 { font-size: 3.5em; }
+            .hero p { font-size: 1.2em; }
+
+            .features-grid, .testimonial-grid, .pricing-grid, .footer-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .navbar-logo {
+                margin-bottom: 15px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: rgba(26, 26, 46, 0.98);
+                padding: 20px 0;
+                border-radius: var(--border-radius-md);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 10px 20px;
+                text-align: center;
+            }
+
+            .menu-toggle {
+                display: flex;
+                position: absolute;
+                right: 20px;
+                top: 25px;
+            }
+
+            .hero {
+                height: 80vh;
+                padding: 15px;
+            }
+
+            .hero-content {
+                padding: 30px;
+            }
+
+            .hero h1 {
+                font-size: 2.8em;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .features-grid, .testimonial-grid, .pricing-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.popular {
+                transform: translateY(0);
+            }
+
+            .footer-grid {
+                text-align: center;
+            }
+
+            .footer-col {
+                margin-bottom: 30px;
+            }
+
+            .footer-col ul {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2.5em; }
+            h2 { font-size: 1.8em; }
+            h3 { font-size: 1.3em; }
+
+            .hero h1 {
+                font-size: 2.2em;
+            }
+
+            .hero p {
+                font-size: 0.9em;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .navbar-logo {
+                font-size: 1.5em;
+            }
+
+            .navbar-logo span {
+                font-size: 1em;
+            }
+
+            .pricing-card .price {
+                font-size: 3em;
+            }
+
+            .contact-form {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Sticky Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="navbar-logo">
+                🚀 <span>RankUp Agency</span>
+            </a>
+            <div class="menu-toggle" id="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="nav-menu">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#testimonials">Testimonials</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 2. Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-content">
+            <h1>Skyrocket Your Rankings. Dominate Google.</h1>
+            <p>We're a vibrant web agency specializing in SEO strategies that drive organic traffic and convert visitors into loyal customers.</p>
+            <a href="#contact" class="btn">Get a Free SEO Audit Today!</a>
+        </div>
+    </section>
+
+    <!-- 3. Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Unlock Your Website's Full Potential</h2>
+            <p style="max-width: 700px; margin: 0 auto 60px auto; color: #e0e0e0;">Our expert SEO services are designed to put your business in front of the right audience, exactly when they're looking for you.</p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🔍</div>
+                    <h3>Intelligent Keyword Research</h3>
+                    <p>Discover high-value keywords your competitors are missing. We find terms that bring ready-to-buy customers to your site.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">✍️</div>
+                    <h3>Engaging Content Strategy</h3>
+                    <p>From blog posts to landing pages, we create SEO-optimized content that informs, engages, and converts your target audience.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔗</div>
+                    <h3>Powerful Link Building</h3>
+                    <p>Boost your domain authority with a strong backlink profile. We secure high-quality links that tell Google you're an authority.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Testimonials Section -->
+    <section id="testimonials" class="testimonials">
+        <div class="container">
+            <h2>What Our Clients Say</h2>
+            <p style="max-width: 700px; margin: 0 auto 60px auto; color: #e0e0e0;">Don't just take our word for it – hear from businesses that have transformed their online presence with RankUp Agency.</p>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <img src="https://picsum.photos/400/300?random=11" alt="Client 1">
+                    <p>"RankUp Agency completely transformed our online visibility. Our organic traffic doubled within 6 months, leading to a significant increase in leads. Highly recommend their professional and vibrant team!"</p>
+                    <div class="author">- Jane Doe, CEO of TechSolutions</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="https://picsum.photos/400/300?random=12" alt="Client 2">
+                    <p>"Working with RankUp was a game-changer for our e-commerce store. Their content strategy and technical SEO expertise helped us rank for competitive keywords we never thought possible."</p>
+                    <div class="author">- John Smith, Founder of StyleHub</div>
+                </div>
+                <div class="testimonial-card">
+                    <img src="https://picsum.photos/400/300?random=13" alt="Client 3">
+                    <p>"The team at RankUp is incredibly knowledgeable and proactive. They provided clear reports and consistent communication. Our local SEO

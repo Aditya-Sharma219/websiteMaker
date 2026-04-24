@@ -6,12 +6,13 @@ export const dynamic = 'force-dynamic';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-const SYSTEM_PROMPT = `You are an expert website generator.
-Return ONLY raw HTML. No markdown. No backticks. No explanation.
-Start with <!DOCTYPE html> end with </html>.
-CSS in <style> tag in <head>. JS in <script> tag before </body>.
-NO external fonts or stylesheets. Use system fonts only.
-Dark theme. Fully responsive.
+const SYSTEM_PROMPT = `You are an expert master frontend developer and UI/UX designer.
+You must return ONLY raw, complete HTML. No markdown formatting. No backticks. No conversational text.
+Your response should start with <!DOCTYPE html> and end with </html>.
+CSS must be in a <style> tag in the <head>. JS must be in a <script> tag just before </body>.
+ONLY use Vanilla HTML, CSS, and JS. Do not use React, Vue, or Tailwind CDN.
+Always explicitly define a background-color and color on the <body> tag in your CSS.
+Make the design massive, beautiful, fully responsive, and professional.
 
 MUST include ALL these sections:
 1. Sticky Navbar with logo and nav links
@@ -33,20 +34,33 @@ export async function POST(req) {
       return NextResponse.json({ error: "Prompt required" }, { status: 400 });
     }
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash",
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+    const fullPrompt = `${SYSTEM_PROMPT}\n\nUser request: ${prompt}`;
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 8192,
       },
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      ]
     });
-
-    const fullPrompt = `${SYSTEM_PROMPT}\n\nUser request: ${prompt}`;
-
-    const result = await model.generateContent(fullPrompt);
     const text = await result.response.text();
+    
+    // Debug info
+    const candidate = result.response.candidates && result.response.candidates[0];
+    const finishReason = candidate ? candidate.finishReason : 'UNKNOWN';
+    console.log("RESPONSE LENGTH:", text.length, "| FINISH REASON:", finishReason);
 
-    console.log("RESPONSE LENGTH:", text.length);
+    if (finishReason !== 'STOP') {
+      console.log("ABNORMAL TERMINATION! Raw snippet:", text.slice(-500));
+    }
 
     let html = extractHTML(text);
 
@@ -66,7 +80,8 @@ export async function POST(req) {
     return NextResponse.json({
       html,
       css: extractCSS(html),
-      js: extractJS(html)
+      js: extractJS(html),
+      finishReason
     });
 
   } catch (err) {
@@ -81,19 +96,21 @@ function extractHTML(text) {
     .replace(/```/g, "")
     .trim();
 
-  const start = cleaned.indexOf("<!DOCTYPE");
-  const end = cleaned.lastIndexOf("</html>");
+  const startMatch = cleaned.match(/<!doctype|<html/i);
+  const endMatches = [...cleaned.matchAll(/<\/html>/gi)];
+  const endMatch = endMatches.length > 0 ? endMatches[endMatches.length - 1] : null;
 
-  if (start !== -1 && end !== -1) {
-    return cleaned.slice(start, end + 7);
+  if (startMatch && endMatch) {
+    const startIdx = startMatch.index;
+    const endIdx = endMatch.index + 7;
+    return cleaned.slice(startIdx, endIdx);
   }
 
-  if (start !== -1) return cleaned.slice(start);
+  if (startMatch) {
+    return cleaned.slice(startMatch.index);
+  }
 
-  const start2 = cleaned.indexOf("<html");
-  if (start2 !== -1) return cleaned.slice(start2);
-
-  if (cleaned.includes("<body")) return cleaned;
+  if (cleaned.includes("<body") || cleaned.includes("<BODY")) return cleaned;
 
   return null;
 }
